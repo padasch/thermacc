@@ -9,8 +9,6 @@ In this study, we tested a photosynthesis model that predicts a plant's response
 We found that to accurately predict observed patterns, it was essential to include three acclimation processes: adjustments in photosynthetic capacities, enzyme activities, and stomatal response to air dryness. The model showed that thermal acclimation buffers plants against the effect of global warming, leading to smaller increases in photosynthesis in cold climates and smaller declines in warm climates compared to models without acclimation.
 This study highlights the importance of incorporating thermal acclimation into vegetation models to improve predictions of plant responses under future climate scenarios.
 
-![](graphical_abstract.png)
-
 ------------------------------------------------------------------------
 
 ## Reproducibility
