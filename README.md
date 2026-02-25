@@ -1,6 +1,6 @@
 # Global Photosynthesis Acclimates to Rising Temperatures Through Predictable Changes in Photosynthetic Capacities, Enzyme Kinetics, and Stomatal Sensitivity
 
-{Citation to be added after publication}
+Schneider, P. D., Gessler, A., & Stocker, B. D. (2025). Global photosynthesis acclimates to rising temperatures through predictable changes in photosynthetic capacities, enzyme kinetics, and stomatal sensitivity. Journal of Advances in Modeling Earth Systems, 17, e2024MS004789. https://doi.org/10.1029/2024MS004789
 
 ## Simple Abstract
 
