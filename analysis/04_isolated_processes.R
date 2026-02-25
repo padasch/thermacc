@@ -207,7 +207,7 @@ add_labels <-
     data = 
       data.frame(
         cl   = c('A', 'C', 'D', 'ET'),
-        label   = c('(a)', '(b)', '(c)', '(d)')
+        label   = c('(d)', '(c)', '(b)', '(a)')
       ) %>% 
       mutate(across(cl, factor, levels=c('ET', 'D', 'C', 'A'))),
     aes(y = 135, 
@@ -492,18 +492,18 @@ no_xy_axis <- theme_classic() + theme(axis.title.x = element_blank(), axis.text.
 
 p <-
   ## Top row
-  p_noacc_scaled$p_jvr_tgrowth   + no_x_axis  + annotate("text", x = 1, y = 3, label = "", fontface = "bold", size = 10/.pt) + labs(title = "", caption = NULL, subtitle = "No acclimation", y = bquote(JV[r])) + ylim(1.25, 3) + xlim(0, 40) +  # "Modelled (No acclimation)"
-  p_fullacc$p_jvr_tgrowth        + no_xy_axis + annotate("text", x = 1, y = 3, label = "", fontface = "bold", size = 10/.pt) + labs(title = "", caption = NULL, subtitle = "Full acclimation") + ylim(1.25, 3) + xlim(0, 40) +  # "Modelled (Full acclimation)"
-  # p_fullacc$p_jvr_tgrowth        + no_xy_axis + annotate("text", x = 1, y = 3, label = "", fontface = "bold", size = 10/.pt) + labs(title = "", caption = NULL, subtitle = "Observations") +  # "Observed"
+  p_noacc_scaled$p_jvr_tgrowth   + no_x_axis  + annotate("text", x = 1, y = 3, label = "(a)", fontface = "bold", size = 10/.pt) + labs(title = "", caption = NULL, subtitle = "No acclimation", y = bquote(JV[r])) + ylim(1.25, 3) + xlim(0, 40) +  # "Modelled (No acclimation)"
+  p_fullacc$p_jvr_tgrowth        + no_xy_axis + annotate("text", x = 1, y = 3, label = "(b)", fontface = "bold", size = 10/.pt) + labs(title = "", caption = NULL, subtitle = "Full acclimation") + ylim(1.25, 3) + xlim(0, 40) +  # "Modelled (Full acclimation)"
+  # p_fullacc$p_jvr_tgrowth        + no_xy_axis + annotate("text", x = 1, y = 3, label = "()", fontface = "bold", size = 10/.pt) + labs(title = "", caption = NULL, subtitle = "Observations") +  # "Observed"
   plot_spacer() +
   ## Mid Row
-  p_pc$p_jvr_tgrowth   + no_x_axis  + annotate("text", x = 1, y = 3, label = "", fontface = "bold", size = 10/.pt) + labs(subtitle = "PC", caption = NULL, y = bquote(JV[r])) + ylim(1.25, 3) + xlim(0, 40) +
-  p_sb$p_jvr_tgrowth   + no_xy_axis + annotate("text", x = 1, y = 3, label = "", fontface = "bold", size = 10/.pt) + labs(subtitle = "SS", caption = NULL) + ylim(1.25, 3) + xlim(0, 40) +
-  p_er$p_jvr_tgrowth   + no_xy_axis + annotate("text", x = 1, y = 3, label = "", fontface = "bold", size = 10/.pt) + labs(subtitle = "ER", caption = NULL) + ylim(1.25, 3) + xlim(0, 40) +
+  p_pc$p_jvr_tgrowth   + no_x_axis  + annotate("text", x = 1, y = 3, label = "(c)", fontface = "bold", size = 10/.pt) + labs(subtitle = "PC", caption = NULL, y = bquote(JV[r])) + ylim(1.25, 3) + xlim(0, 40) +
+  p_sb$p_jvr_tgrowth   + no_xy_axis + annotate("text", x = 1, y = 3, label = "(d)", fontface = "bold", size = 10/.pt) + labs(subtitle = "SS", caption = NULL) + ylim(1.25, 3) + xlim(0, 40) +
+  p_er$p_jvr_tgrowth   + no_xy_axis + annotate("text", x = 1, y = 3, label = "(e)", fontface = "bold", size = 10/.pt) + labs(subtitle = "ER", caption = NULL) + ylim(1.25, 3) + xlim(0, 40) +
   ## Bottom Row
-  p_sb_pc$p_jvr_tgrowth  + theme_classic() + annotate("text", x = 1, y = 3, label = "", fontface = "bold", size = 10/.pt) + labs(subtitle = "PC + SS", caption = NULL, y = bquote(JV[r])) + ylim(1.25, 3) + xlim(0, 40) +
-  p_er_pc$p_jvr_tgrowth  + no_y_axis  + annotate("text", x = 1, y = 3, label = "", fontface = "bold", size = 10/.pt)      + labs(subtitle = "PC + ER", caption = NULL) + ylim(1.25, 3) + xlim(0, 40) +
-  p_er_sb$p_jvr_tgrowth  + no_y_axis  + annotate("text", x = 1, y = 3, label = "", fontface = "bold", size = 10/.pt)      + labs(subtitle = "SS + ER", caption = NULL) + ylim(1.25, 3) + xlim(0, 40) +
+  p_sb_pc$p_jvr_tgrowth  + theme_classic() + annotate("text", x = 1, y = 3, label = "(f)", fontface = "bold", size = 10/.pt) + labs(subtitle = "PC + SS", caption = NULL, y = bquote(JV[r])) + ylim(1.25, 3) + xlim(0, 40) +
+  p_er_pc$p_jvr_tgrowth  + no_y_axis  + annotate("text", x = 1, y = 3, label = "(g)", fontface = "bold", size = 10/.pt)      + labs(subtitle = "PC + ER", caption = NULL) + ylim(1.25, 3) + xlim(0, 40) +
+  p_er_sb$p_jvr_tgrowth  + no_y_axis  + annotate("text", x = 1, y = 3, label = "(h)", fontface = "bold", size = 10/.pt)      + labs(subtitle = "SS + ER", caption = NULL) + ylim(1.25, 3) + xlim(0, 40) +
   
   ## Aesthetics
   plot_layout(guides = "collect",
