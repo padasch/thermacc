@@ -1,5 +1,5 @@
 # Script for running smaller analyses ----
-source("R/source.R")
+# source("R/source.R")
 dir_tmp <- here("output/additional_analyses/", Sys.Date(), "/")
 if (!dir.exists(dir_tmp)) dir.create(dir_tmp, recursive = T, showWarnings = F)
 
@@ -233,7 +233,14 @@ p_metrics_topt <-
   labs(color = "Condition:", shape = "Model Fit: ") +
   theme_classic() +
   theme(legend.position = "bottom", legend.direction = "horizontal") +
-  facet_wrap(~metric, ncol = 1, scales = "free_y",  labeller = vlabeller) +
+  facet_wrap(
+    ~metric,
+    ncol = 1,
+    scales = "free_y",
+    labeller = labeller(
+      metric = as_labeller(vnames, label_parsed)
+    )
+  ) +
   ylab("Metric Value") +
   xlab(bquote(varphi[0] ~ "[-]")) +
   ggtitle(bquote(T[opt]))
@@ -251,7 +258,14 @@ p_metrics_aopt <-
   labs(color = "Condition:", shape = "Model Fit: ") +
   theme_classic() +
   theme(legend.position = "bottom", legend.direction = "horizontal") +
-  facet_wrap(~metric, ncol = 1, scales = "free_y",  labeller = vlabeller) +
+  facet_wrap(
+    ~metric,
+    ncol = 1,
+    scales = "free_y",
+    labeller = labeller(
+      metric = as_labeller(vnames, label_parsed)
+    )
+  ) +
   ylab(NULL) +
   xlab(bquote(varphi[0] ~ "[-]")) +
   ggtitle(bquote(A[opt]))
@@ -269,7 +283,14 @@ p_metrics_tspan <-
   labs(color = "Condition:", shape = "Model Fit: ") +
   theme_classic() +
   theme(legend.position = "bottom", legend.direction = "horizontal") +
-  facet_wrap(~metric, ncol = 1, scales = "free_y",  labeller = vlabeller) +
+  facet_wrap(
+    ~metric,
+    ncol = 1,
+    scales = "free_y",
+    labeller = labeller(
+      metric = as_labeller(vnames, label_parsed)
+    )
+  ) +
   ylab(NULL) +
   xlab(bquote(varphi[0] ~ "[-]")) +
   ggtitle(bquote(T[span]))
@@ -497,7 +518,14 @@ p_metrics_topt <-
   labs(color = "Condition:", shape = "Model Fit: ") +
   theme_classic() +
   theme(legend.position = "bottom", legend.direction = "vertical") +
-  facet_wrap(~metric, ncol = 1, scales = "free_y",  labeller = vlabeller) +
+  facet_wrap(
+    ~metric,
+    ncol = 1,
+    scales = "free_y",
+    labeller = labeller(
+      metric = as_labeller(vnames, label_parsed)
+    )
+  ) +
   ylab("Metric Value") +
   xlab(bquote(tau ~ " [days]")) +
   ggtitle(bquote(T[opt]))
@@ -524,7 +552,14 @@ p_metrics_aopt <-
   labs(color = "Condition:", shape = "Model Fit: ") +
   theme_classic() +
   theme(legend.position = "none", legend.direction = "vertical") +
-  facet_wrap(~metric, ncol = 1, scales = "free_y",  labeller = vlabeller) +
+  facet_wrap(
+    ~metric,
+    ncol = 1,
+    scales = "free_y",
+    labeller = labeller(
+      metric = as_labeller(vnames, label_parsed)
+    )
+  ) +
   ylab(NULL) +
   xlab(bquote(tau ~ " [days]")) +
   ggtitle(bquote(A[opt]))
@@ -551,7 +586,14 @@ p_metrics_tspan <-
   labs(color = "Condition:", shape = "Model Fit: ") +
   theme_classic() +
   theme(legend.position = "none", legend.direction = "vertical") +
-  facet_wrap(~metric, ncol = 1, scales = "free_y",  labeller = vlabeller) +
+  facet_wrap(
+    ~metric,
+    ncol = 1,
+    scales = "free_y",
+    labeller = labeller(
+      metric = as_labeller(vnames, label_parsed)
+    )
+  ) +
   ylab(NULL) +
   xlab(bquote(tau ~ " [days]")) +
   ggtitle(bquote(T[span]))
