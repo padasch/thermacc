@@ -48,7 +48,7 @@ calc_aj <- function(kphio, ppfd, jmax, gammastar, ci = NA, ca, fapar, theta = 0.
         ci <- QUADM(A, B, C)
     }
     
-    aj   <- j/4 * (ci)/(ci + 2 * gammastar)
+    aj   <- j/4 * (ci-gammastar)/(ci + 2 * gammastar)
     
     out = list(aj   = aj,
                j    =  j,
