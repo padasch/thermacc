@@ -405,11 +405,13 @@ rpmodel_inst <- function(inputs, make_checks = T) {
     # Gross assimilation rate: A_gross
     agross <- min(aj, ac)
     
-    if (aj == ac) {
+    if (anyNA(c(aj, ac, agross))) {
+    min_a <- NA_character_
+    } else if (isTRUE(aj == ac)) {
     min_a <- "colimit"
-    } else if (agross == ac) {
+    } else if (isTRUE(agross == ac)) {
     min_a <- "ac"
-    } else if (agross == aj) {
+    } else if (isTRUE(agross == aj)) {
     min_a <- "aj"
     }
     
