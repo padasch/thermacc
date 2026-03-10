@@ -11,13 +11,13 @@ current_date <- format(Sys.Date(), "%Y-%m-%d")
 
 # Define the mapping of output names to source file patterns for main figures
 figure_mapping <- list(
-  figure1 = "modelled-observed-patterns_3x3.pdf",
-  figure2 = "mod-obs_topt_3x3.pdf",
-  figure3 = "aopt-tgrowth_3x3.pdf",
-  figure4 = "traits-both.pdf",
-  figure5 = "curve-shape-per-climate-fullacc.pdf",
-  figure6 = "jvr-tgrowth_3x3.pdf",
-  figure7 = "trajectory-relative-only.pdf"
+  figure_1 = "modelled-observed-patterns_3x3.pdf",
+  figure_2 = "mod-obs_topt_3x3.pdf",
+  figure_3 = "aopt-tgrowth_3x3.pdf",
+  figure_4 = "traits-both.pdf",
+  figure_5 = "curve-shape-per-climate-fullacc.pdf",
+  figure_6 = "jvr-tgrowth_3x3.pdf",
+  figure_7 = "trajectory-relative-only.pdf"
 )
 
 # Define supplementary PDF files to copy (without renaming)
