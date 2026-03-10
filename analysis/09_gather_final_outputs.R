@@ -44,6 +44,8 @@ supp_pdf_files <- c(
 supp_csv_files <- c(
   "si_site-metadata.csv",
   "trait-temp_clean_topt.csv",
+  "trait-temp_clean_aopt.csv",
+  "trait-temp_clean_tspan.csv",
   "trait-temp_full_tspan.csv",
   "trait-temp_full_topt.csv",
   "trait-temp_full_aopt.csv",
