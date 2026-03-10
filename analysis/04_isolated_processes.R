@@ -399,7 +399,7 @@ p_pft <-
   (
     p_noacc_scaled$p_traits_list$vcmax25 + labs(subtitle = NULL, y = bquote(V[cmax]^25 ~ "[µmol" ~ m^-2 ~ s ^-1 ~ "]")) +
     p_noacc_scaled$p_traits_list$jmax25  + labs(subtitle = NULL, y = bquote(J[max]^25 ~ "[µmol" ~ m^-2 ~ s ^-1 ~ "]")) +
-    p_noacc_scaled$p_traits_list$xi      + labs(subtitle = NULL, y = bquote(xi ~ "[" ~ Pa^-0.5 ~ "]"))
+    p_noacc_scaled$p_traits_list$xi      + labs(subtitle = NULL, y = bquote(xi^"'" ~ "[" ~ Pa^0.5 ~ "]"))
     ) +
   plot_layout(guides = "collect") &
   # plot_annotation(title = expression("PFT-specific values for " ~ V[cmax]^25 ~ "," ~ J[max]^25 ~ ", and" ~ xi)) &
@@ -422,7 +422,7 @@ p_opt <-
   (
     p_fullacc$p_traits_list$vcmax25   + annotate("text", x = 35, y = 2, label = "(a)", fontface = "bold", size = 10/.pt) + labs(subtitle = NULL, y = bquote(V[cmax]^25 ~ "[µmol" ~ m^-2 ~ s ^-1 ~ "]")) +
       p_fullacc$p_traits_list$jmax25  + annotate("text", x = 35, y = 4, label = "(b)", fontface = "bold", size = 10/.pt) + labs(subtitle = NULL, y = bquote(J[max]^25 ~ "[µmol" ~ m^-2 ~ s ^-1 ~ "]")) +
-      p_fullacc$p_traits_list$xi      + annotate("text", x = 35, y = 2, label = "(c)", fontface = "bold", size = 10/.pt) + labs(subtitle = NULL, y = bquote(xi ~ "[" ~ Pa^-0.5 ~ "]"))
+      p_fullacc$p_traits_list$xi      + annotate("text", x = 35, y = 2, label = "(c)", fontface = "bold", size = 10/.pt) + labs(subtitle = NULL, y = bquote(xi^"'" ~ "[" ~ Pa^0.5 ~ "]"))
   ) +
   plot_layout(guides = "collect") &
   theme_classic() &
@@ -442,7 +442,7 @@ p_opt <-
   (
     p_fullacc$p_traits_list$vcmax25   + annotate("text", x = 2, y = 150, label = "(d)", fontface = "bold", size = 10/.pt) + labs(subtitle = NULL, y = bquote(V[cmax]^25 ~ "[µmol" ~ m^-2 ~ s ^-1 ~ "]")) +
       p_fullacc$p_traits_list$jmax25  + annotate("text", x = 2, y = 300, label = "(e)", fontface = "bold", size = 10/.pt) + labs(subtitle = NULL, y = bquote(J[max]^25 ~ "[µmol" ~ m^-2 ~ s ^-1 ~ "]")) +
-      p_fullacc$p_traits_list$xi      + annotate("text", x = 2, y = 150, label = "(f)", fontface = "bold", size = 10/.pt) + labs(subtitle = NULL, y = bquote(xi ~ "[" ~ Pa^-0.5 ~ "]"))
+      p_fullacc$p_traits_list$xi      + annotate("text", x = 2, y = 150, label = "(f)", fontface = "bold", size = 10/.pt) + labs(subtitle = NULL, y = bquote(xi^"'" ~ "[" ~ Pa^0.5 ~ "]"))
   ) +
   plot_layout(guides = "collect") &
   # plot_annotation(title = expression("Optimaliy-prediced values for " ~ V[cmax]^25 ~ "," ~ J[max]^25 ~ ", and" ~ xi)) &
@@ -464,7 +464,7 @@ p_pft <-
   (
     p_er$p_traits_list$vcmax25   + annotate("text", x = 2, y = 150, label = "(a)", fontface = "bold", size = 10/.pt) + labs(subtitle = NULL, y = bquote(V[cmax]^25 ~ "[µmol" ~ m^-2 ~ s ^-1 ~ "]")) +
       p_er$p_traits_list$jmax25  + annotate("text", x = 2, y = 300, label = "(b)", fontface = "bold", size = 10/.pt) + labs(subtitle = NULL, y = bquote(J[max]^25 ~ "[µmol" ~ m^-2 ~ s ^-1 ~ "]")) +
-      p_er$p_traits_list$xi      + annotate("text", x = 2, y = 150, label = "(c)", fontface = "bold", size = 10/.pt) + labs(subtitle = NULL, y = bquote(xi ~ "[" ~ Pa^-0.5 ~ "]"))
+      p_er$p_traits_list$xi      + annotate("text", x = 2, y = 150, label = "(c)", fontface = "bold", size = 10/.pt) + labs(subtitle = NULL, y = bquote(xi^"'" ~ "[" ~ Pa^0.5 ~ "]"))
   ) +
   plot_layout(guides = "collect") &
   # plot_annotation(title = expression("PFT-specific values for " ~ V[cmax]^25 ~ "," ~ J[max]^25 ~ ", and" ~ xi)) &
