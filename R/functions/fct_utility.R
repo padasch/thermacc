@@ -1,6 +1,86 @@
 # Recycled functions for analysis workflow ----
 
 # . ----
+# Safe wrappers for model functions ----
+
+## Safe wrapper for rpmodel_inst to prevent pipeline crashes on NA inputs ----
+safe_rpmodel_inst <- function(inputs) {
+  tryCatch(
+    rpmodel_inst(inputs),
+    error = function(e) {
+      # Keep pipeline running; downstream summaries can drop NA outputs if needed.
+      list(
+        agross = NA_real_,
+        anet = NA_real_,
+        vcmax = NA_real_,
+        jmax = NA_real_,
+        rd = NA_real_,
+        ci = NA_real_,
+        aj = NA_real_,
+        aj_net = NA_real_,
+        ac = NA_real_,
+        ac_net = NA_real_,
+        min_a = NA_character_,
+        tc_leaf = if ("tc_leaf" %in% names(inputs)) inputs$tc_leaf else NA_real_,
+        eb_convergence = NA,
+        gs_c = NA_real_,
+        dummy = NA_real_
+      )
+    }
+  )
+}
+
+safe_peak_tc_leaf <- function(df, var_name) {
+  if (!all(c(var_name, "tc_leaf") %in% names(df))) return(NA_real_)
+  x <- df[[var_name]]
+  if (length(x) == 0 || all(is.na(x))) return(NA_real_)
+  x_rank <- ifelse(is.na(x), -Inf, x)
+  idx <- which.max(x_rank)
+  if (length(idx) == 0 || is.infinite(x_rank[idx])) return(NA_real_)
+  out <- df$tc_leaf[idx]
+  if (length(out) == 0 || is.na(out)) return(NA_real_)
+  as.double(out[[1]])
+}
+
+safe_peak_value <- function(df, var_name, scale = 1) {
+  if (!(var_name %in% names(df))) return(NA_real_)
+  x <- df[[var_name]]
+  if (length(x) == 0 || all(is.na(x))) return(NA_real_)
+  x_rank <- ifelse(is.na(x), -Inf, x)
+  idx <- which.max(x_rank)
+  if (length(idx) == 0 || is.infinite(x_rank[idx])) return(NA_real_)
+  out <- x[idx]
+  if (length(out) == 0 || is.na(out)) return(NA_real_)
+  as.double(out[[1]]) * scale
+}
+
+safe_peak_min_a <- function(df) {
+  if (!all(c("anet", "min_a") %in% names(df))) return(NA_character_)
+  x <- df$anet
+  if (length(x) == 0 || all(is.na(x))) return(NA_character_)
+  x_rank <- ifelse(is.na(x), -Inf, x)
+  idx <- which.max(x_rank)
+  if (length(idx) == 0 || is.infinite(x_rank[idx])) return(NA_character_)
+  out <- df$min_a[idx]
+  if (length(out) == 0 || is.na(out)) return(NA_character_)
+  as.character(out[[1]])
+}
+
+safe_tspan_bound <- function(df, bound = c("min", "max")) {
+  bound <- match.arg(bound)
+  if (!all(c("anet", "tc_leaf") %in% names(df))) return(NA_real_)
+  x <- df$anet
+  if (length(x) == 0 || all(is.na(x))) return(NA_real_)
+  max_x <- suppressWarnings(max(x, na.rm = TRUE))
+  if (!is.finite(max_x)) return(NA_real_)
+  sel <- which(!is.na(x) & x > (0.9 * max_x) & !is.na(df$tc_leaf))
+  if (length(sel) == 0) return(NA_real_)
+  tc <- df$tc_leaf[sel]
+  if (bound == "min") return(as.double(min(tc, na.rm = TRUE)))
+  as.double(max(tc, na.rm = TRUE))
+}
+
+# . ----
 # To wrangle data ----
 
 ## Dampen Climate Data ----
@@ -814,7 +894,7 @@ k19_run_inst <- function(df_acc, settings, sensana = FALSE) {
     df_tmp_2 %>% 
     nest(inputs = !any_of(c("sitename", "date", "id"))) %>%
     rowwise() %>%
-    mutate(rpm_inst = rpmodel_inst(inputs) %>%
+    mutate(rpm_inst = safe_rpmodel_inst(inputs) %>%
              as_tibble() %>%
              list()
     ) %>%
@@ -836,29 +916,23 @@ k19_run_inst <- function(df_acc, settings, sensana = FALSE) {
       unnest(rpm_inst) %>%
       nest(rpm_inst = !all_of(c("sitename", "date"))) %>%
       mutate(
-        tc_opt        = purrr::map_dbl(rpm_inst, ~ slice_max(., anet)   %>% pull(tc_leaf)),
-        tc_opt_agross = purrr::map_dbl(rpm_inst, ~ slice_max(., agross) %>% pull(tc_leaf)),
-        tc_opt_ac     = purrr::map_dbl(rpm_inst, ~ slice_max(., ac)     %>% pull(tc_leaf)),
-        tc_opt_aj     = purrr::map_dbl(rpm_inst, ~ slice_max(., aj)     %>% pull(tc_leaf)),
+        tc_opt        = purrr::map_dbl(rpm_inst, ~ safe_peak_tc_leaf(., "anet")),
+        tc_opt_agross = purrr::map_dbl(rpm_inst, ~ safe_peak_tc_leaf(., "agross")),
+        tc_opt_ac     = purrr::map_dbl(rpm_inst, ~ safe_peak_tc_leaf(., "ac")),
+        tc_opt_aj     = purrr::map_dbl(rpm_inst, ~ safe_peak_tc_leaf(., "aj")),
         
-        min_a         = purrr::map_chr(rpm_inst, ~ slice_max(., anet)   %>% pull(min_a)),
+        min_a         = purrr::map_chr(rpm_inst, ~ safe_peak_min_a(.)),
         min_a         = as.factor(min_a),
         
-        agross_opt    = purrr::map_dbl(rpm_inst, ~ slice_max(., agross) %>% pull(agross) * 1e6),
-        anet_opt      = purrr::map_dbl(rpm_inst, ~ slice_max(., anet) %>% pull(anet) * 1e6),
+        agross_opt    = purrr::map_dbl(rpm_inst, ~ safe_peak_value(., "agross", scale = 1e6)),
+        anet_opt      = purrr::map_dbl(rpm_inst, ~ safe_peak_value(., "anet", scale = 1e6)),
         
         anet_growth   = 0, # purrr::map_dbl(rpm_inst, ~ dplyr::filter(., tc_growth_air == tc_leaf) %>% pull(anet) * 1e6),
         min_agrowth   = "ac", # purrr::map_chr(rpm_inst, ~ dplyr::filter(., tc_growth_air == tc_leaf) %>% pull(min_a)),
         min_agrowth   = "ac", # as.factor(min_agrowth),
         
-        tspan_l       = purrr::map_dbl(rpm_inst,
-                                       ~ dplyr::filter(., anet > (0.9 * max(anet))) %>%
-                                         slice_min(tc_leaf) %>%
-                                         pull(tc_leaf)),
-        tspan_h       = purrr::map_dbl(rpm_inst,
-                                       ~ dplyr::filter(., anet > (0.9 * max(anet))) %>%
-                                         slice_max(tc_leaf) %>%
-                                         pull(tc_leaf)),
+        tspan_l       = purrr::map_dbl(rpm_inst, ~ safe_tspan_bound(., "min")),
+        tspan_h       = purrr::map_dbl(rpm_inst, ~ safe_tspan_bound(., "max")),
         tspan          = tspan_h - tspan_l
       ) %>%
       nest(rpm_sim = !all_of(c("sitename", "date", "rpm_inst"))) %>%
@@ -3713,7 +3787,7 @@ run_inst_for_365_days <- function(df_acc,
     df_tmp %>% 
     nest(inputs = !any_of(c("sitename", "date", "id"))) %>%
     rowwise() %>%
-    mutate(rpm_inst = rpmodel_inst(inputs) %>%
+    mutate(rpm_inst = safe_rpmodel_inst(inputs) %>%
              as_tibble() %>%
              list()
     ) %>%
@@ -3732,29 +3806,23 @@ run_inst_for_365_days <- function(df_acc,
     unnest(rpm_inst) %>% 
     nest(rpm_inst = !all_of(c("sitename", "date"))) %>% 
     mutate(
-      tc_opt        = purrr::map_dbl(rpm_inst, ~ slice_max(., anet)   %>% pull(tc_leaf)),
-      tc_opt_agross = purrr::map_dbl(rpm_inst, ~ slice_max(., agross) %>% pull(tc_leaf)),
-      tc_opt_ac     = purrr::map_dbl(rpm_inst, ~ slice_max(., ac)     %>% pull(tc_leaf)),
-      tc_opt_aj     = purrr::map_dbl(rpm_inst, ~ slice_max(., aj)     %>% pull(tc_leaf)),
+      tc_opt        = purrr::map_dbl(rpm_inst, ~ safe_peak_tc_leaf(., "anet")),
+      tc_opt_agross = purrr::map_dbl(rpm_inst, ~ safe_peak_tc_leaf(., "agross")),
+      tc_opt_ac     = purrr::map_dbl(rpm_inst, ~ safe_peak_tc_leaf(., "ac")),
+      tc_opt_aj     = purrr::map_dbl(rpm_inst, ~ safe_peak_tc_leaf(., "aj")),
       
-      min_a         = purrr::map_chr(rpm_inst, ~ slice_max(., anet)   %>% pull(min_a)),
+      min_a         = purrr::map_chr(rpm_inst, ~ safe_peak_min_a(.)),
       min_a         = as.factor(min_a),
       
-      agross_opt    = purrr::map_dbl(rpm_inst, ~ slice_max(., agross) %>% pull(agross) * 1e6),
-      anet_opt      = purrr::map_dbl(rpm_inst, ~ slice_max(., anet) %>% pull(anet) * 1e6),
+      agross_opt    = purrr::map_dbl(rpm_inst, ~ safe_peak_value(., "agross", scale = 1e6)),
+      anet_opt      = purrr::map_dbl(rpm_inst, ~ safe_peak_value(., "anet", scale = 1e6)),
       
       anet_growth   = 0, # purrr::map_dbl(rpm_inst, ~ dplyr::filter(., tc_growth_air == tc_leaf) %>% pull(anet) * 1e6),
       min_agrowth   = "ac", # purrr::map_chr(rpm_inst, ~ dplyr::filter(., tc_growth_air == tc_leaf) %>% pull(min_a)),
       min_agrowth   = "ac", # as.factor(min_agrowth),
       
-      tspan_l       = purrr::map_dbl(rpm_inst, 
-                                     ~ dplyr::filter(., anet > (0.9 * max(anet))) %>% 
-                                       slice_min(tc_leaf) %>% 
-                                       pull(tc_leaf)),
-      tspan_h       = purrr::map_dbl(rpm_inst, 
-                                     ~ dplyr::filter(., anet > (0.9 * max(anet))) %>% 
-                                       slice_max(tc_leaf) %>% 
-                                       pull(tc_leaf)),
+      tspan_l       = purrr::map_dbl(rpm_inst, ~ safe_tspan_bound(., "min")),
+      tspan_h       = purrr::map_dbl(rpm_inst, ~ safe_tspan_bound(., "max")),
       tspan          = tspan_h - tspan_l
     ) %>%
     nest(rpm_sim = !all_of(c("sitename", "date", "rpm_inst"))) %>%
