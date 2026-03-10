@@ -3146,7 +3146,7 @@ plot_all_for_one_model <- function(df_plot, title_1 = "model_1") {
       ylab_txt    <- bquote(g[s,c] ~ "[µmol C" ~ m^-2 ~ s ^-1 ~ Pa^-1 ~ "]")
       ylim_val <- max(df_red_1$y) + round(max(df_red_1$y) * 0.1)
     } else if (trait == "xi") {
-      ylab_txt    <- bquote("xi [" ~ Pa^-0.5 ~ "]")
+      ylab_txt    <- bquote("xi' [" ~ Pa^0.5 ~ "]")
       # ylim_val <- max(df_red_1$y) + round(max(df_red_1$y) * 0.1)
       ylim_val <- 150
     }
